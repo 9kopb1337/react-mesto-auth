@@ -8,8 +8,13 @@ export default function PopupWithForm({
   onClickClose,
   onSubmit,
 }) {
+
+  function handleOverlayClose(e) {
+    if (e.target === e.currentTarget) onClickClose(e);
+  }
+
   return (
-    <div className={`popup ${isOpen ? "popup_opened" : ""}`}>
+    <div className={`popup ${isOpen ? "popup_opened" : ""}`} onClick={handleOverlayClose}>
       <div className="popup__container">
         <button
           className="popup__button popup__button_act_exit"
