@@ -1,0 +1,15 @@
+.popup__photo {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+@media (max-width: 580px) {
+  .popup__photo {
+    margin: 0 19px;
+    padding: 25px 22px;
+  }
+}
