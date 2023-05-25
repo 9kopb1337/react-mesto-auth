@@ -20,12 +20,12 @@ export default function Register(props) {
   }
 
   return (
-    <div className="auth">
-      <h2 className="auth__title">Регистрация</h2>
-      <form className="auth__form" onSubmit={handleSubmit}>
+    <div className="login">
+      <h2 className="login__title">Регистрация</h2>
+      <form className="login__form" onSubmit={handleSubmit}>
         <input
           name="email"
-          className="auth__input"
+          className="login__input"
           type="email"
           placeholder="Email"
           required
@@ -35,7 +35,7 @@ export default function Register(props) {
         />
         <input
           name="password"
-          className="auth__input"
+          className="login__input"
           type="password"
           placeholder="Пароль"
           minLength="2"
@@ -45,13 +45,13 @@ export default function Register(props) {
           value={userPassword}
           autoComplete="on"
         />
-        <button className="auth__button" type="submit">
+        <button className="login__button" type="submit">
           Зарегистрироваться
         </button>
       </form>
-      <p className="auth__text">
+      <p className="login__text">
         Уже зарегистрированы?
-        <Link className="auth__link" to="./sign-in">
+        <Link className="login__link" to="./sign-in">
           Войти
         </Link>
       </p>
