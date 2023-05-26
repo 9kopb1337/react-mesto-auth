@@ -1,18 +1,32 @@
-export default function InfoTooltip({ message, onClickClose }) {
-  function handleOverlayClose(e) {
-    if (e.target === e.currentTarget) onClickClose(e);
-  }
+import React from "react";
+import success from "../images/icons/icon_reg_success.svg";
+import fail from "../images/icons/icon_reg_fail.svg";
 
+export default function InfoTooltip(props) {
   return (
-    <div className={`popup popup_type_reg` + (message ? "popup_opened" : "")} onClick={handleOverlayClose}>
-      <div className="popup__photo">
+    <div
+      className={`popup popup_type_edit  popup_type_reg ${
+        props.isOpen ? "popup_opened" : ""
+      }`}
+      onClick={props.handleOverlayClose}
+    >
+      <div className="popup__container">
         <button
           className="popup__button popup__button_act_exit"
           type="button"
           value="close"
-          onClick={onClickClose}
+          onClick={props.onClickClose}
         ></button>
-        <h2 className="popup__photo-name">{message ? message.text : ""}</h2>
+        <img
+          className="popup__icon"
+          src={props.isSuccess ? success : fail}
+          alt={props.isSuccess ? "Успех" : "Провал"}
+        ></img>
+        <h2 className="popup__photo-name">
+          {props.isSuccess
+            ? "Вы успешно зарегистрировались!"
+            : "Что-то пошло не так! Попробуйте еще раз!"}
+        </h2>
       </div>
     </div>
   );

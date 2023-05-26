@@ -9,6 +9,12 @@ import AddPlacePopup from "./AddPlacePopup.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { api } from "../utils/Api.js";
 import "../pages/index.css";
+import InfoTooltip from "./InfoTooltip.js";
+import Register from "./Register.js";
+import Login from "./Login.js";
+import { ProtectedRoute } from "./ProtectedRoute.js";
+import { auth } from "../utils/auth.js";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 
 //Доделать APP
 
@@ -21,6 +27,9 @@ export default function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [card, setCard] = React.useState([]);
+  const [userEmail, setUserEmail] = React.useState("");
+  const [isLogged, setIsLogged] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     Promise.all([api.getProfileInfo(), api.getCards()])
@@ -107,19 +116,65 @@ export default function App() {
       .catch((err) => console.log(err));
   }
 
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          setUserEmail(res.data.email);
+          setIsLogged(true);
+          navigate("/");
+        })
+        .catch(console.error);
+    }
+  }, [navigate]);
+
+  function handleLogin() {
+    setIsLogged(true);
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setIsLogged(false);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onEditAvatar={handleEditAvatarClick}
-          onAddPlace={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-          card={card}
+        <Header
+          loggedIn={isLogged}
+          userEmail={userEmail}
+          onSignOut={handleLogout}
         />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute isLoggedIn={isLogged}>
+                <Main
+                  onEditProfile={handleEditProfileClick}
+                  onEditAvatar={handleEditAvatarClick}
+                  onAddPlace={handleAddPlaceClick}
+                  onCardClick={handleCardClick}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
+                  card={card}
+                  email={userEmail}
+                  onLogout={handleLogout}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/sign-up" element={<Register />} />
+          <Route path="/sign-in" element={<Login />} />
+          <Route
+            path="*"
+            element={
+              isLogged ? <Navigate to="/" /> : <Navigate to="/sign-in" />
+            }
+          />
+        </Routes>
         <Footer />
         <EditProfilePopup
           name="profile"
@@ -147,6 +202,7 @@ export default function App() {
           isOpen={isCardOpen}
           onClickClose={closeAllPopups}
         />
+        <InfoTooltip onClickClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>
   );
