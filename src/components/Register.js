@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Register(props) {
-  const [userEmail, setUserEmail] = React.useState("");
-  const [userPassword, setUserPassword] = React.useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
 
   function handleUserEmailChange(e) {
     setUserEmail(e.target.value);
@@ -49,12 +49,7 @@ export default function Register(props) {
           Зарегистрироваться
         </button>
       </form>
-      <p className="login__text">
-        Уже зарегистрированы?
-        <Link className="login__link" to="./sign-in">
-          Войти
-        </Link>
-      </p>
+      <p className="login__text"><Link className="login__link" to="./sign-in">Уже зарегистрированы? Войти</Link></p>
     </div>
   );
 }

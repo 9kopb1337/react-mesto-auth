@@ -13,6 +13,8 @@
     transition: opacity .3s;
     color: #000000;
     cursor: pointer;
+    height: 50px;
+    min-width: 358px;
 }
 
 @media (max-width: 430px) {

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Login(props) {
-  const [userEmail, setUserEmail] = React.useState("");
-  const [userPassword, setUserPassword] = React.useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
 
   function handleUserEmailChange(e) {
     setUserEmail(e.target.value);
