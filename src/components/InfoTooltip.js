@@ -19,11 +19,11 @@ export default function InfoTooltip(props) {
         ></button>
         <img
           className="popup__icon"
-          src={props.isSuccess ? success : fail}
-          alt={props.isSuccess ? "Успех" : "Провал"}
+          src={props.succes ? success : fail}
+          alt={props.succes ? "Успех" : "Провал"}
         ></img>
         <h2 className="popup__photo-name">
-          {props.isSuccess
+          {props.succes
             ? "Вы успешно зарегистрировались!"
             : "Что-то пошло не так! Попробуйте еще раз!"}
         </h2>

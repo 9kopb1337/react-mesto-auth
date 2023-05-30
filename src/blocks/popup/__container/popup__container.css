@@ -11,6 +11,7 @@
   flex-direction: column;
   flex-wrap: wrap;
   align-items: stretch;
+  min-height: 330px;
 }
 
 @media (max-width: 535px) {

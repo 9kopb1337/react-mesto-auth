@@ -1,35 +1,37 @@
 import React, { useState } from "react";
 
-export default function Login(props) {
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+export default function Login({ onLogin }) {
+  const [userLoggin, setUserLoggin] = useState({
+    email: "",
+    password: "",
+  });
 
-  function handleUserEmailChange(e) {
-    setUserEmail(e.target.value);
-  }
+  const handleChangeUserLoggin = (e) => {
+    const { name, value } = e.target;
+    setUserLoggin((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  function handleUserPasswordChange(e) {
-    setUserPassword(e.target.value);
-  }
-
-  function handleSubmit(e) {
+  const handleSubmitUserLoggin = (e) => {
     e.preventDefault();
-
-    props.onRegister(userEmail, userPassword);
-  }
+    const { email, password } = userLoggin;
+    onLogin(email, password);
+  };
 
   return (
     <div className="login">
-      <h2 className="login__title">Регистрация</h2>
-      <form className="login__form" onSubmit={handleSubmit}>
+      <h2 className="login__title">Вход</h2>
+      <form className="login__form" onSubmit={handleSubmitUserLoggin}>
         <input
           name="email"
           className="login__input"
           type="email"
           placeholder="Email"
           required
-          onChange={handleUserEmailChange}
-          value={userEmail}
+          onChange={handleChangeUserLoggin}
+          value={userLoggin.email}
           autoComplete="on"
         />
         <input
@@ -40,8 +42,8 @@ export default function Login(props) {
           minLength="2"
           maxLength="12"
           required
-          onChange={handleUserPasswordChange}
-          value={userPassword}
+          onChange={handleChangeUserLoggin}
+          value={userLoggin.password}
           autoComplete="on"
         />
         <button className="login__button" type="submit">

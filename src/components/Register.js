@@ -1,36 +1,38 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function Register(props) {
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+export default function Register({ onRegister }) {
+  const [userReg, setUserReg] = useState({
+    email: "",
+    password: "",
+  });
 
-  function handleUserEmailChange(e) {
-    setUserEmail(e.target.value);
-  }
+  const handleChangeUserData = (e) => {
+    const { name, value } = e.target;
+    setUserReg((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  function handleUserPasswordChange(e) {
-    setUserPassword(e.target.value);
-  }
-
-  function handleSubmit(e) {
+  const handleSubmitUserData = (e) => {
     e.preventDefault();
-
-    props.onRegister(userEmail, userPassword);
-  }
+    const { email, password } = userReg;
+    onRegister(email, password);
+  };
 
   return (
     <div className="login">
       <h2 className="login__title">Регистрация</h2>
-      <form className="login__form" onSubmit={handleSubmit}>
+      <form className="login__form" onSubmit={handleSubmitUserData}>
         <input
           name="email"
           className="login__input"
           type="email"
           placeholder="Email"
           required
-          onChange={handleUserEmailChange}
-          value={userEmail}
+          onChange={handleChangeUserData}
+          value={userReg.email}
           autoComplete="on"
         />
         <input
@@ -41,15 +43,22 @@ export default function Register(props) {
           minLength="2"
           maxLength="12"
           required
-          onChange={handleUserPasswordChange}
-          value={userPassword}
+          onChange={handleChangeUserData}
+          value={userReg.password}
           autoComplete="on"
         />
-        <button className="login__button" type="submit">
+        <button
+          className="login__button"
+          type="submit"
+        >
           Зарегистрироваться
         </button>
       </form>
-      <p className="login__text"><Link className="login__link" to="./sign-in">Уже зарегистрированы? Войти</Link></p>
+      <p className="login__text">
+        <Link className="login__link" to="/sign-in">
+          Уже зарегистрированы? Войти
+        </Link>
+      </p>
     </div>
   );
 }

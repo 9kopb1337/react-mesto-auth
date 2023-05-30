@@ -26,9 +26,12 @@ export default function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [card, setCard] = useState([]);
-  const [userEmail, setUserEmail] = useState("");
+
+  const [email, setEmail] = useState("");
   const [isLogged, setIsLogged] = useState(false);
   const [infoTooltip, setInfoTooltip] = useState(false);
+  const [succes, setSucces] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -119,26 +122,59 @@ export default function App() {
       .catch((err) => console.log(err));
   }
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+  const checkToken = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      console.log("jwt => ", jwt);
       auth
-        .checkToken(token)
+        .checkToken(jwt)
         .then((res) => {
-          setUserEmail(res.data.email);
+          setEmail(res.data.email);
           setIsLogged(true);
           navigate("/");
         })
-        .catch(console.error);
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        });
     }
-  }, [navigate]);
+  };
 
-  function handleLogin() {
-    setIsLogged(true);
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  function handleRegister(email, password) {
+    auth
+      .register(email, password)
+      .then(() => {
+        setSucces(true);
+        setInfoTooltip(true);
+        navigate("/sign-in");
+      })
+      .catch((err) => {
+        setSucces(false);
+        setInfoTooltip(true);
+      });
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
+  function handleLogin(email, password) {
+    auth
+      .authorize(email, password)
+      .then((res) => {
+        if (res) {
+          setIsLogged(true);
+          localStorage.setItem("jwt", res.token);
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        setSucces(false);
+        setInfoTooltip(true);
+      });
+  }
+
+  function handleLogOut() {
+    localStorage.removeItem("jwt");
     setIsLogged(false);
   }
 
@@ -146,37 +182,33 @@ export default function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header
-          loggedIn={isLogged}
-          userEmail={userEmail}
-          onSignOut={handleLogout}
+          onLogin={isLogged}
+          userEmail={email}
+          handleLogOut={handleLogOut}
         />
         <Routes>
           <Route
             path="/"
             element={
-              <ProtectedRoute isLoggedIn={isLogged}>
-                <Main
-                  onEditProfile={handleEditProfileClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleCardDelete}
-                  card={card}
-                  email={userEmail}
-                  onLogout={handleLogout}
-                />
-              </ProtectedRoute>
+              <ProtectedRoute
+                onLogin={isLogged}
+                element={Main}
+                onEditProfile={handleEditProfileClick}
+                onEditAvatar={handleEditAvatarClick}
+                onAddPlace={handleAddPlaceClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                card={card}
+              />
             }
           />
-          <Route path="/sign-up" element={<Register />} />
-          <Route path="/sign-in" element={<Login />} />
           <Route
-            path="*"
-            element={
-              isLogged ? <Navigate to="/" /> : <Navigate to="/sign-in" />
-            }
+            path="/sign-up"
+            element={<Register onRegister={handleRegister} />}
           />
+          <Route path="/sign-in" element={<Login onLogin={handleLogin} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />
         <EditProfilePopup
@@ -205,7 +237,11 @@ export default function App() {
           isOpen={isCardOpen}
           onClickClose={closeAllPopups}
         />
-        <InfoTooltip onClickClose={closeAllPopups} />
+        <InfoTooltip
+          onClickClose={closeAllPopups}
+          succes={succes}
+          isOpen={infoTooltip}
+        />
       </div>
     </CurrentUserContext.Provider>
   );
