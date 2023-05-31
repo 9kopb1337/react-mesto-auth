@@ -1,10 +1,8 @@
 .popup__photo-name {
-  margin: 0;
+  margin: 10px 0 0;
   font-style: normal;
-  font-weight: 900;
-  font-size: 24px;
-  line-height: 17px;
-  color: #000;
-  text-align: center;
-  font-family: "Inter", "Arial", sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: #fff;
 }

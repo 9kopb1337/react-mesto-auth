@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../images/icons/logo.svg";
 import { Link, useLocation } from "react-router-dom";
 
-export default function Header({ email, isLogged, onSignOut }) {
+export default function Header({ email, isLogged, handleLogOut }) {
   const location = useLocation();
 
   const path = location.pathname === "/sign-in" ? "/sign-up" : "/sign-in";
@@ -14,7 +14,7 @@ export default function Header({ email, isLogged, onSignOut }) {
       {isLogged ? (
         <div className="header__info">
           <p className="header__email">{email}</p>
-          <button className="header__button" type="button" onClick={onSignOut}>
+          <button className="header__button" type="button" onClick={handleLogOut}>
             Выйти
           </button>
         </div>

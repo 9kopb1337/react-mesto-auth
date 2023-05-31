@@ -34,17 +34,6 @@ export default function App() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isLogged) {
-      Promise.all([api.getProfileInfo(), api.getCards()])
-        .then(([user, card]) => {
-          setCurrentUser(user);
-          setCard(card);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [isLogged]);
-
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
   }
@@ -154,6 +143,7 @@ export default function App() {
       .catch((err) => {
         setSucces(false);
         setInfoTooltip(true);
+        console.log(err);
       });
   }
 
@@ -165,11 +155,13 @@ export default function App() {
           setIsLogged(true);
           localStorage.setItem("jwt", res.token);
           navigate("/");
+          setEmail(email);
         }
       })
       .catch((err) => {
         setSucces(false);
         setInfoTooltip(true);
+        console.log(err);
       });
   }
 
@@ -178,20 +170,27 @@ export default function App() {
     setIsLogged(false);
   }
 
+  useEffect(() => {
+    if (isLogged) {
+      Promise.all([api.getProfileInfo(), api.getCards()])
+        .then(([user, card]) => {
+          setCurrentUser(user);
+          setCard(card);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [isLogged]);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header
-          onLogin={isLogged}
-          userEmail={email}
-          handleLogOut={handleLogOut}
-        />
+        <Header isLogged={isLogged} email={email} handleLogOut={handleLogOut} />
         <Routes>
           <Route
             path="/"
             element={
               <ProtectedRoute
-                onLogin={isLogged}
+                isLogged={isLogged}
                 element={Main}
                 onEditProfile={handleEditProfileClick}
                 onEditAvatar={handleEditAvatarClick}

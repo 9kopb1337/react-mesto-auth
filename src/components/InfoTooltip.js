@@ -22,7 +22,7 @@ export default function InfoTooltip(props) {
           src={props.succes ? success : fail}
           alt={props.succes ? "Успех" : "Провал"}
         ></img>
-        <h2 className="popup__photo-name">
+        <h2 className="popup__message">
           {props.succes
             ? "Вы успешно зарегистрировались!"
             : "Что-то пошло не так! Попробуйте еще раз!"}
